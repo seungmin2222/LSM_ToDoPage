@@ -1,8 +1,4 @@
-interface KanbanItemProps {
-  title: string;
-  startDate: string;
-  endDate: string;
-}
+import { KanbanItemProps } from '@/types/kanban';
 
 export default function KanbanItem({
   title,
