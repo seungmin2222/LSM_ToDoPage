@@ -1,5 +1,3 @@
-'use client';
-
 import { KanbanItem } from '@/types/kanban';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -22,7 +20,10 @@ export default function KanbanItemDetail({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50">
+    <div
+      className="fixed inset-0 z-10 flex items-center justify-center bg-black/50"
+      onMouseDown={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="w-full max-w-md space-y-4 rounded-xl bg-gray-800 p-6">
         <div className="flex items-center justify-between border-b border-gray-700 pb-3">
           <h3 className="text-lg font-medium text-white">일정 상세</h3>
@@ -31,20 +32,10 @@ export default function KanbanItemDetail({
             onClick={onClose}
             className="rounded-lg p-1 text-gray-400 hover:bg-gray-700 hover:text-white"
           >
-            <svg
-              className="h-5 w-5"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
+            Ｘ
           </button>
         </div>
-        <div className="space-y-6 py-2">
+        <div className="select-text space-y-6 py-2">
           <div>
             <p className="mb-1 text-sm font-medium text-gray-400">제목</p>
             <div className="rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white">
@@ -70,7 +61,7 @@ export default function KanbanItemDetail({
           <button
             type="button"
             onClick={() => onDelete(item.id)}
-            className="text-sm text-red-400 hover:text-red-300"
+            className="rounded-lg border border-red-500/30 px-4 py-2 text-sm text-red-400 hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-300"
           >
             삭제
           </button>
