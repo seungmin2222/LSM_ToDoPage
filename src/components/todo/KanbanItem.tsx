@@ -1,4 +1,4 @@
-import { KanbanItem as KanbanItemProps } from '@/types/kanban';
+import { KanbanItem as KanbanItemType } from '@/types/kanban';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState } from 'react';
@@ -6,12 +6,15 @@ import KanbanItemDetail from './KanbanItemDetail';
 import KanbanItemForm from './KanbanItemForm';
 
 export default function KanbanItem({
-  id,
+  kanbanId,
   title,
   content,
   startDate,
   endDate,
-}: KanbanItemProps) {
+  boardId,
+  order,
+  createdAt,
+}: KanbanItemType) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
@@ -31,13 +34,13 @@ export default function KanbanItem({
     setIsDetailOpen(true);
   };
 
-  const handleEditFromDetail = (itemId: number) => {
+  const handleEditFromDetail = (itemId: string) => {
     console.log(itemId);
     setIsDetailOpen(false);
     setIsFormOpen(true);
   };
 
-  const handleDeleteFromDetail = (itemId: number) => {
+  const handleDeleteFromDetail = (itemId: string) => {
     if (window.confirm('정말로 이 일정을 삭제하시겠습니까?')) {
       console.log('삭제', itemId);
       setIsDetailOpen(false);
@@ -86,12 +89,13 @@ export default function KanbanItem({
       {isFormOpen && (
         <KanbanItemForm
           onClose={() => setIsFormOpen(false)}
+          boardId={boardId}
           initialData={{
-            id,
+            kanbanId,
             title,
             content,
-            startDate: new Date(startDate),
-            endDate: new Date(endDate),
+            startDate,
+            endDate,
           }}
         />
       )}
@@ -99,11 +103,14 @@ export default function KanbanItem({
       {isDetailOpen && (
         <KanbanItemDetail
           item={{
-            id,
+            kanbanId,
             title,
             content,
-            startDate: new Date(startDate),
-            endDate: new Date(endDate),
+            startDate,
+            endDate,
+            boardId,
+            order,
+            createdAt,
           }}
           onEdit={handleEditFromDetail}
           onDelete={handleDeleteFromDetail}

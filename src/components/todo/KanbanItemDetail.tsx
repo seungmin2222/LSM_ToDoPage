@@ -1,13 +1,6 @@
-import { KanbanItem } from '@/types/kanban';
+import { KanbanItemDetailProps } from '@/types/kanban';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
-
-interface KanbanItemDetailProps {
-  item: KanbanItem;
-  onEdit: (id: number) => void;
-  onDelete: (id: number) => void;
-  onClose: () => void;
-}
 
 export default function KanbanItemDetail({
   item,
@@ -60,7 +53,7 @@ export default function KanbanItemDetail({
         <div className="flex items-center justify-between border-t border-gray-700 pt-4">
           <button
             type="button"
-            onClick={() => onDelete(item.id)}
+            onClick={() => onDelete(item.kanbanId)}
             className="rounded-lg border border-red-500/30 px-4 py-2 text-sm text-red-400 hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-300"
           >
             삭제
@@ -68,7 +61,7 @@ export default function KanbanItemDetail({
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => onEdit(item.id)}
+              onClick={() => onEdit(item.kanbanId)}
               className="rounded-lg bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
             >
               수정

@@ -1,16 +1,16 @@
 'use client';
 
-import { MenuItem } from '@/types/kanban';
+import { KanbanBoard as KanbanBoardProps, MenuItem } from '@/types/kanban';
 import { useRef, useState } from 'react';
 import KanbanDropdownMenu from './KanbanDropdownMenu';
-import TodoItem from './KanbanItem';
+import KanbanItem from './KanbanItem';
 import KanbanItemForm from './KanbanItemForm';
 
-interface KanbanColumnProps {
-  title: string;
-}
-
-export default function KanbanColumn({ title }: KanbanColumnProps) {
+export default function KanbanBoard({
+  boardId,
+  title,
+  items,
+}: KanbanBoardProps) {
   const [showForm, setShowForm] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -110,27 +110,19 @@ export default function KanbanColumn({ title }: KanbanColumnProps) {
       </div>
 
       <div className="space-y-2">
-        <TodoItem
-          id={1}
-          title={'시작전'}
-          content="1"
-          startDate={new Date('2025-01-13')}
-          endDate={new Date('2025-01-14')}
-        />
-        <TodoItem
-          id={2}
-          title={'진행중'}
-          content="2"
-          startDate={new Date('2025-01-13')}
-          endDate={new Date('2025-01-13')}
-        />
-        <TodoItem
-          id={3}
-          title={'마무리'}
-          content="3"
-          startDate={new Date('2025-01-11')}
-          endDate={new Date('2025-01-11')}
-        />
+        {items.map((item) => (
+          <KanbanItem
+            key={item.kanbanId}
+            kanbanId={item.kanbanId}
+            title={item.title}
+            content={item.content}
+            startDate={item.startDate}
+            endDate={item.endDate}
+            boardId={item.boardId}
+            order={item.order}
+            createdAt={item.createdAt}
+          />
+        ))}
         <button
           onClick={() => setShowForm(true)}
           className="w-full rounded-lg border border-gray-700 bg-gray-800/50 p-3 text-left text-gray-400 transition-all hover:bg-gray-700"
@@ -139,7 +131,13 @@ export default function KanbanColumn({ title }: KanbanColumnProps) {
         </button>
       </div>
 
-      {showForm && <KanbanItemForm onClose={() => setShowForm(false)} />}
+      {showForm && (
+        <KanbanItemForm
+          onClose={() => setShowForm(false)}
+          boardId={boardId}
+          initialData={undefined}
+        />
+      )}
     </div>
   );
 }

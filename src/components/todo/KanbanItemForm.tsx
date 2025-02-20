@@ -1,16 +1,13 @@
-import { KanbanItem } from '@/types/kanban';
+import { KanbanItem, KanbanItemFormProps } from '@/types/kanban';
 import { ko } from 'date-fns/locale';
 import { FormEvent, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
-interface KanbanItemFormProps {
-  onClose: () => void;
-  initialData?: KanbanItem;
-}
+import { v4 as uuid } from 'uuid';
 
 export default function KanbanItemForm({
   onClose,
+  boardId,
   initialData,
 }: KanbanItemFormProps) {
   const [title, setTitle] = useState(initialData?.title ?? '');
@@ -29,12 +26,19 @@ export default function KanbanItemForm({
       return;
     }
 
-    console.log({
+    const formData: Omit<KanbanItem, 'updatedAt'> = {
+      kanbanId: initialData?.kanbanId ?? uuid(),
       title,
       content,
       startDate,
       endDate,
-    });
+      boardId,
+      order: 0,
+      createdAt: new Date(),
+    };
+
+    console.log(formData);
+    onClose();
   };
 
   return (

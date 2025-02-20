@@ -1,11 +1,5 @@
-import { MenuItem } from '@/types/kanban';
+import { KanbanDropdownMenuProps } from '@/types/kanban';
 import { createPortal } from 'react-dom';
-
-interface KanbanDropdownMenuProps {
-  items: MenuItem[];
-  onClose: () => void;
-  position: { x: number; y: number };
-}
 
 export default function KanbanDropdownMenu({
   items,
