@@ -27,13 +27,19 @@ export interface KanbanItemFormProps {
   boardId: string;
   initialData?: Pick<
     KanbanItem,
-    'kanbanId' | 'title' | 'content' | 'startDate' | 'endDate'
+    | 'kanbanId'
+    | 'title'
+    | 'content'
+    | 'startDate'
+    | 'endDate'
+    | 'order'
+    | 'createdAt'
   >;
 }
 
 export interface KanbanItemDetailProps {
   item: KanbanItem;
-  onEdit: (id: string) => void;
+  onEdit: () => void;
   onDelete: (id: string) => void;
   onClose: () => void;
 }

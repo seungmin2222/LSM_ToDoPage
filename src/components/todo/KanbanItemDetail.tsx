@@ -61,7 +61,7 @@ export default function KanbanItemDetail({
           <div className="flex gap-2">
             <button
               type="button"
-              onClick={() => onEdit(item.kanbanId)}
+              onClick={onEdit}
               className="rounded-lg bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
             >
               수정

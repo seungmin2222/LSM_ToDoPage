@@ -1,3 +1,4 @@
+import { useKanbanStore } from '@/stores/kanban';
 import { KanbanItem, KanbanItemFormProps } from '@/types/kanban';
 import { ko } from 'date-fns/locale';
 import { FormEvent, useState } from 'react';
@@ -10,6 +11,8 @@ export default function KanbanItemForm({
   boardId,
   initialData,
 }: KanbanItemFormProps) {
+  const addItem = useKanbanStore((state) => state.addItem);
+  const updateItem = useKanbanStore((state) => state.updateItem);
   const [title, setTitle] = useState(initialData?.title ?? '');
   const [content, setContent] = useState(initialData?.content ?? '');
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
@@ -33,11 +36,16 @@ export default function KanbanItemForm({
       startDate,
       endDate,
       boardId,
-      order: 0,
-      createdAt: new Date(),
+      order: initialData?.order ?? 0,
+      createdAt: initialData?.createdAt ?? new Date(),
     };
 
-    console.log(formData);
+    if (initialData) {
+      updateItem(formData);
+    } else {
+      addItem(formData);
+    }
+
     onClose();
   };
 

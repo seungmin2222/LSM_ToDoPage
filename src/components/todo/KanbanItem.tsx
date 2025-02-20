@@ -85,7 +85,6 @@ export default function KanbanItem({
           </button>
         </div>
       </div>
-
       {isFormOpen && (
         <KanbanItemForm
           onClose={() => setIsFormOpen(false)}
@@ -96,10 +95,11 @@ export default function KanbanItem({
             content,
             startDate,
             endDate,
+            order,
+            createdAt,
           }}
         />
       )}
-
       {isDetailOpen && (
         <KanbanItemDetail
           item={{
