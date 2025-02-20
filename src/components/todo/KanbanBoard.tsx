@@ -78,7 +78,9 @@ export default function KanbanBoard({
             className="w-full rounded border border-gray-600 bg-gray-900 px-2 py-1 text-white focus:border-blue-500 focus:outline-none"
           />
         ) : (
-          <h3 className="font-medium text-white">{title}</h3>
+          <h3 className="max-w-[180px] overflow-hidden truncate font-medium text-white">
+            {title}
+          </h3>
         )}
         <div className="flex gap-2">
           <div className="relative">
