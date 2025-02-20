@@ -1,5 +1,3 @@
-'use client';
-
 import { KanbanItem } from '@/types/kanban';
 import { ko } from 'date-fns/locale';
 import { FormEvent, useState } from 'react';
@@ -41,13 +39,22 @@ export default function KanbanItemForm({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black/50"
+      className="fixed inset-0 z-10 flex items-center justify-center bg-black/50"
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div className="w-full max-w-md space-y-4 rounded-xl bg-gray-800 p-6">
-        <h3 className="text-lg font-medium text-white">
-          {initialData ? '일정 수정' : '새 일정 추가'}
-        </h3>
+        <div className="flex items-center justify-between border-b border-gray-700 pb-3">
+          <h3 className="text-lg font-medium text-white">
+            {initialData ? '일정 수정' : '새 일정 추가'}
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-lg p-1 text-gray-400 hover:bg-gray-700 hover:text-white"
+          >
+            Ｘ
+          </button>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="mb-1 block text-sm text-gray-400">제목</label>
@@ -86,17 +93,10 @@ export default function KanbanItemForm({
               wrapperClassName="w-full"
             />
           </div>
-          <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 text-sm text-gray-400 hover:text-white"
-            >
-              취소
-            </button>
+          <div className="flex w-full border-t border-gray-700 pt-4">
             <button
               type="submit"
-              className="rounded-lg bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
+              className="w-full rounded-lg bg-blue-500 px-4 py-2 text-sm text-white hover:bg-blue-600"
             >
               {initialData ? '수정' : '추가'}
             </button>
