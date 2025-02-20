@@ -5,12 +5,14 @@ import { useRef, useState } from 'react';
 import KanbanDropdownMenu from './KanbanDropdownMenu';
 import KanbanItem from './KanbanItem';
 import KanbanItemForm from './KanbanItemForm';
+import { useKanbanStore } from '@/stores/kanban';
 
 export default function KanbanBoard({
   boardId,
   title,
   items,
 }: KanbanBoardProps) {
+  const deleteBoard = useKanbanStore((state) => state.deleteBoard);
   const [showForm, setShowForm] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -57,7 +59,7 @@ export default function KanbanBoard({
       label: '보드 삭제',
       onClick: () => {
         if (window.confirm('정말로 이 보드을 삭제하시겠습니까?')) {
-          console.log('보드 삭제');
+          deleteBoard(boardId);
         }
       },
       variant: 'danger',
