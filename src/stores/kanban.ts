@@ -10,6 +10,7 @@ interface KanbanStore {
   deleteBoard: (boardId: string) => void;
   addItem: (item: Omit<KanbanItem, 'updatedAt'>) => void;
   updateItem: (updatedItem: KanbanItem) => void;
+  deleteItem: (kanbanId: string) => void;
 }
 
 export const useKanbanStore = create<KanbanStore>()(
@@ -72,6 +73,13 @@ export const useKanbanStore = create<KanbanStore>()(
           })),
         }));
       },
+      deleteItem: (kanbanId) =>
+        set((state) => ({
+          boards: state.boards.map((board) => ({
+            ...board,
+            items: board.items.filter((item) => item.kanbanId !== kanbanId),
+          })),
+        })),
     }),
     {
       name: 'kanban-storage',

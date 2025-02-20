@@ -1,3 +1,4 @@
+import { useKanbanStore } from '@/stores/kanban';
 import { KanbanItem as KanbanItemType } from '@/types/kanban';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -15,6 +16,7 @@ export default function KanbanItem({
   order,
   createdAt,
 }: KanbanItemType) {
+  const deleteItem = useKanbanStore((state) => state.deleteItem);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
@@ -26,7 +28,7 @@ export default function KanbanItem({
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (window.confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-      console.log('삭제');
+      deleteItem(kanbanId);
     }
   };
 
@@ -34,15 +36,14 @@ export default function KanbanItem({
     setIsDetailOpen(true);
   };
 
-  const handleEditFromDetail = (itemId: string) => {
-    console.log(itemId);
+  const handleEditFromDetail = () => {
     setIsDetailOpen(false);
     setIsFormOpen(true);
   };
 
   const handleDeleteFromDetail = (itemId: string) => {
     if (window.confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-      console.log('삭제', itemId);
+      deleteItem(itemId);
       setIsDetailOpen(false);
     }
   };
