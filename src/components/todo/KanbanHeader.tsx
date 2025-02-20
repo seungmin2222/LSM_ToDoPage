@@ -1,14 +1,16 @@
 'use client';
 
+import { useKanbanStore } from '@/stores/kanban';
 import { useState } from 'react';
 
 export default function KanbanHeader() {
   const [boardName, setBoardName] = useState('');
+  const addBoard = useKanbanStore((state) => state.addBoard);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (boardName.trim()) {
-      console.log('새 보드 이름:', boardName);
+      addBoard(boardName.trim());
       setBoardName('');
     }
   };
