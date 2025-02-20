@@ -1,6 +1,18 @@
+'use client';
+
+import { useKanbanStore } from '@/stores/kanban';
 import MetricCard from './MetricCard';
 
 export default function KanbanMetrics() {
+  const boards = useKanbanStore((state) => state.boards);
+  const deleteBoard = useKanbanStore((state) => state.deleteBoard);
+
+  const metrics = boards.map((board) => ({
+    id: board.boardId,
+    label: board.title,
+    value: board.items.length,
+  }));
+
   return (
     <header className="mb-4">
       <div className="flex items-center justify-between">
@@ -13,9 +25,14 @@ export default function KanbanMetrics() {
       </div>
       <div className="flex overflow-x-auto pb-4">
         <div className="mt-4 flex gap-4">
-          <MetricCard label="시작전" value={3} />
-          <MetricCard label="진행중" value={13} />
-          <MetricCard label="마무리" value={11} />
+          {metrics.map((metric) => (
+            <MetricCard
+              key={metric.id}
+              label={metric.label}
+              value={metric.value}
+              onDelete={() => deleteBoard(metric.id)}
+            />
+          ))}
         </div>
       </div>
     </header>
