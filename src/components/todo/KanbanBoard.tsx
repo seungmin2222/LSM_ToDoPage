@@ -12,6 +12,7 @@ export default function KanbanBoard({
   title,
   items,
 }: KanbanBoardProps) {
+  const updateBoard = useKanbanStore((state) => state.updateBoard);
   const deleteBoard = useKanbanStore((state) => state.deleteBoard);
   const [showForm, setShowForm] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
@@ -36,7 +37,7 @@ export default function KanbanBoard({
 
   const handleTitleSubmit = () => {
     if (editedTitle.trim()) {
-      console.log('보드명 변경:', editedTitle);
+      updateBoard(boardId, editedTitle.trim());
       setIsEditing(false);
     }
   };
