@@ -15,6 +15,7 @@ export default function KanbanItem({
   boardId,
   order,
   createdAt,
+  updatedAt,
 }: KanbanItemType) {
   const deleteItem = useKanbanStore((state) => state.deleteItem);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -63,7 +64,7 @@ export default function KanbanItem({
       >
         <div className="flex items-center gap-2">
           <div className="min-w-0 flex-1">
-            <div className="text-white">{title}</div>
+            <div className="w-full truncate text-white">{title}</div>
             <div className="mt-1 text-sm text-gray-400">
               {formattedStartDate === formattedEndDate
                 ? formattedStartDate
@@ -112,6 +113,7 @@ export default function KanbanItem({
             boardId,
             order,
             createdAt,
+            updatedAt: updatedAt || undefined,
           }}
           onEdit={handleEditFromDetail}
           onDelete={handleDeleteFromDetail}

@@ -11,7 +11,7 @@ export default function KanbanMain() {
   return (
     <main className="rounded-xl bg-gray-800 p-6">
       <KanbanHeader />
-      <div className="mt-8 flex gap-6 overflow-x-auto pb-4">
+      <div className="mt-8 flex gap-2 overflow-x-auto pb-4">
         {boards.map((board) => (
           <KanbanBoard
             key={board.boardId}

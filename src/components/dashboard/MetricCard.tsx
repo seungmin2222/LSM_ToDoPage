@@ -11,8 +11,8 @@ export default function MetricCard({
 }: MetricCardProps) {
   return (
     <div className="group flex flex-shrink-0 gap-4">
-      <div className="relative flex-shrink-0 justify-items-center rounded-lg bg-gray-800 px-4 py-3">
-        <div className="transition-opacity group-hover:opacity-0">
+      <div className="relative flex-shrink-0 justify-items-center rounded-lg bg-gray-800 px-4 py-3 text-center">
+        <div className="min-w-10 transition-opacity group-hover:opacity-0">
           <p className="text-sm text-gray-400">{label}</p>
           <p className="text-xl font-semibold text-white">{value}</p>
         </div>

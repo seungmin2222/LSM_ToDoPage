@@ -126,13 +126,14 @@ export default function KanbanBoard({
             boardId={item.boardId}
             order={item.order}
             createdAt={item.createdAt}
+            updatedAt={item.updatedAt}
           />
         ))}
         <button
           onClick={() => setShowForm(true)}
           className="w-full rounded-lg border border-gray-700 bg-gray-800/50 p-3 text-left text-gray-400 transition-all hover:bg-gray-700"
         >
-          ＋ 새 일정 추가
+          ＋ 새 칸반 추가
         </button>
       </div>
 

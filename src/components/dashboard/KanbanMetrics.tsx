@@ -24,7 +24,7 @@ export default function KanbanMetrics() {
         </div>
       </div>
       <div className="flex overflow-x-auto pb-4">
-        <div className="mt-4 flex gap-4">
+        <div className="mt-4 flex gap-2">
           {metrics.map((metric) => (
             <MetricCard
               key={metric.id}

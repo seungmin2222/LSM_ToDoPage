@@ -74,7 +74,7 @@ export default function KanbanItemForm({
       <div className="w-full max-w-md space-y-4 rounded-xl bg-gray-800 p-6">
         <div className="flex items-center justify-between border-b border-gray-700 pb-3">
           <h3 className="text-lg font-medium text-white">
-            {initialData ? '일정 수정' : '새 일정 추가'}
+            {initialData ? '일정 수정' : '새 칸반 추가'}
           </h3>
           <button
             type="button"
