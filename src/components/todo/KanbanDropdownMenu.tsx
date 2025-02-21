@@ -1,11 +1,11 @@
-import { KanbanDropdownMenuProps } from '@/types/kanban';
+import { PositionedDropdownProps } from '@/types/kanban';
 import { createPortal } from 'react-dom';
 
 export default function KanbanDropdownMenu({
   items,
   onClose,
   position,
-}: KanbanDropdownMenuProps) {
+}: PositionedDropdownProps) {
   return createPortal(
     <dialog
       open

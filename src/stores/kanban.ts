@@ -1,85 +1,154 @@
-import { KanbanBoard, KanbanItem } from '@/types/kanban';
+import { Board, Task } from '@/types/kanban';
 import { v4 as uuid } from 'uuid';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface KanbanStore {
-  boards: KanbanBoard[];
-  addBoard: (title: string) => void;
-  updateBoard: (boardId: string, title: string) => void;
-  deleteBoard: (boardId: string) => void;
-  addItem: (item: Omit<KanbanItem, 'updatedAt'>) => void;
-  updateItem: (updatedItem: KanbanItem) => void;
-  deleteItem: (kanbanId: string) => void;
+  board: Board;
+
+  addColumn: (title: string) => void;
+  updateColumn: (columnId: string, title: string) => void;
+  deleteColumn: (columnId: string) => void;
+
+  addTask: (
+    columnId: string,
+    task: Omit<Task, 'id' | 'columnId' | 'createdAt' | 'updatedAt'>
+  ) => void;
+  updateTask: (taskId: string, task: Partial<Task>) => void;
+  deleteTask: (taskId: string) => void;
 }
 
 export const useKanbanStore = create<KanbanStore>()(
   persist(
     (set) => ({
-      boards: [],
-      addBoard: (title) =>
-        set((state) => ({
-          boards: [
-            ...state.boards,
-            {
-              boardId: uuid(),
-              title,
-              items: [],
-            },
-          ],
-        })),
-      updateBoard: (boardId, title) =>
-        set((state) => ({
-          boards: state.boards.map((board) =>
-            board.boardId === boardId ? { ...board, title } : board
-          ),
-        })),
-      deleteBoard: (boardId) =>
-        set((state) => ({
-          boards: state.boards.filter((board) => board.boardId !== boardId),
-        })),
-      addItem: (newItem) =>
-        set((state) => {
-          const targetBoard = state.boards.find(
-            (board) => board.boardId === newItem.boardId
-          );
-          const newOrder = targetBoard?.items.length ?? 0;
+      board: {
+        columns: {},
+        tasks: {},
+        columnOrder: [],
+      },
 
-          const itemWithOrder = {
-            ...newItem,
-            order: newOrder,
+      addColumn: (title) =>
+        set((state) => {
+          const newColumnId = uuid();
+          return {
+            board: {
+              ...state.board,
+              columns: {
+                ...state.board.columns,
+                [newColumnId]: {
+                  id: newColumnId,
+                  title,
+                  taskIds: [],
+                },
+              },
+              columnOrder: [...state.board.columnOrder, newColumnId],
+            },
+          };
+        }),
+
+      updateColumn: (columnId, title) =>
+        set((state) => ({
+          board: {
+            ...state.board,
+            columns: {
+              ...state.board.columns,
+              [columnId]: {
+                ...state.board.columns[columnId],
+                title,
+              },
+            },
+          },
+        })),
+
+      deleteColumn: (columnId) =>
+        set((state) => {
+          const { [columnId]: deletedColumn, ...remainingColumns } =
+            state.board.columns;
+
+          const remainingTasks = { ...state.board.tasks };
+          deletedColumn.taskIds.forEach((taskId) => {
+            delete remainingTasks[taskId];
+          });
+
+          return {
+            board: {
+              columns: remainingColumns,
+              tasks: remainingTasks,
+              columnOrder: state.board.columnOrder.filter(
+                (id) => id !== columnId
+              ),
+            },
+          };
+        }),
+
+      addTask: (columnId, taskData) =>
+        set((state) => {
+          const newTaskId = uuid();
+          const newTask: Task = {
+            id: newTaskId,
+            ...taskData,
+            columnId,
+            createdAt: new Date(),
           };
 
           return {
-            boards: state.boards.map((board) =>
-              board.boardId === newItem.boardId
-                ? { ...board, items: [...board.items, itemWithOrder] }
-                : board
-            ),
+            board: {
+              ...state.board,
+              tasks: {
+                ...state.board.tasks,
+                [newTaskId]: newTask,
+              },
+              columns: {
+                ...state.board.columns,
+                [columnId]: {
+                  ...state.board.columns[columnId],
+                  taskIds: [
+                    ...state.board.columns[columnId].taskIds,
+                    newTaskId,
+                  ],
+                },
+              },
+            },
           };
         }),
-      updateItem: (updatedItem) => {
-        set((state) => {
-          const newState = {
-            boards: state.boards.map((board) => ({
-              ...board,
-              items: board.items.map((item) =>
-                item.kanbanId === updatedItem.kanbanId
-                  ? { ...updatedItem, updatedAt: new Date() }
-                  : item
-              ),
-            })),
-          };
-          return newState;
-        });
-      },
-      deleteItem: (kanbanId) =>
+
+      updateTask: (taskId, updatedData) =>
         set((state) => ({
-          boards: state.boards.map((board) => ({
-            ...board,
-            items: board.items.filter((item) => item.kanbanId !== kanbanId),
-          })),
+          board: {
+            ...state.board,
+            tasks: {
+              ...state.board.tasks,
+              [taskId]: {
+                ...state.board.tasks[taskId],
+                ...updatedData,
+                updatedAt: new Date(),
+              },
+            },
+          },
         })),
+
+      deleteTask: (taskId) =>
+        set((state) => {
+          const task = state.board.tasks[taskId];
+          const newTasks = { ...state.board.tasks };
+          delete newTasks[taskId];
+
+          return {
+            board: {
+              ...state.board,
+              tasks: newTasks,
+              columns: {
+                ...state.board.columns,
+                [task.columnId]: {
+                  ...state.board.columns[task.columnId],
+                  taskIds: state.board.columns[task.columnId].taskIds.filter(
+                    (id) => id !== taskId
+                  ),
+                },
+              },
+            },
+          };
+        }),
     }),
     {
       name: 'kanban-storage',

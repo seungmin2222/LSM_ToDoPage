@@ -1,18 +1,23 @@
 import { useKanbanStore } from '@/stores/kanban';
-import { KanbanItem, KanbanItemFormProps } from '@/types/kanban';
+import { Task } from '@/types/kanban';
 import { ko } from 'date-fns/locale';
 import { FormEvent, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { v4 as uuid } from 'uuid';
+
+interface KanbanTaskFormProps {
+  onClose: () => void;
+  columnId: string;
+  initialData?: Partial<Task>;
+}
 
 export default function KanbanItemForm({
   onClose,
-  boardId,
+  columnId,
   initialData,
-}: KanbanItemFormProps) {
-  const addItem = useKanbanStore((state) => state.addItem);
-  const updateItem = useKanbanStore((state) => state.updateItem);
+}: KanbanTaskFormProps) {
+  const addTask = useKanbanStore((state) => state.addTask);
+  const updateTask = useKanbanStore((state) => state.updateTask);
   const [title, setTitle] = useState(initialData?.title ?? '');
   const [content, setContent] = useState(initialData?.content ?? '');
   const [touched, setTouched] = useState({
@@ -21,8 +26,8 @@ export default function KanbanItemForm({
     date: false,
   });
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
-    initialData?.startDate ?? null,
-    initialData?.endDate ?? null,
+    initialData?.dueDate?.start ?? null,
+    initialData?.dueDate?.end ?? null,
   ]);
 
   const [startDate, endDate] = dateRange;
@@ -46,21 +51,19 @@ export default function KanbanItemForm({
 
     if (!isFormValid) return;
 
-    const formData: Omit<KanbanItem, 'updatedAt'> = {
-      kanbanId: initialData?.kanbanId ?? uuid(),
+    const taskData = {
       title: title.trim(),
       content: content.trim(),
-      startDate: startDate!,
-      endDate: endDate!,
-      boardId,
-      order: initialData?.order ?? 0,
-      createdAt: initialData?.createdAt ?? new Date(),
+      dueDate: {
+        start: startDate!,
+        end: endDate!,
+      },
     };
 
-    if (initialData) {
-      updateItem(formData);
+    if (initialData?.id) {
+      updateTask(initialData.id, taskData);
     } else {
-      addItem(formData);
+      addTask(columnId, taskData);
     }
 
     onClose();
@@ -74,7 +77,7 @@ export default function KanbanItemForm({
       <div className="w-full max-w-md space-y-4 rounded-xl bg-gray-800 p-6">
         <div className="flex items-center justify-between border-b border-gray-700 pb-3">
           <h3 className="text-lg font-medium text-white">
-            {initialData ? '일정 수정' : '새 칸반 추가'}
+            {initialData ? '일정 수정' : '새 태스크 추가'}
           </h3>
           <button
             type="button"

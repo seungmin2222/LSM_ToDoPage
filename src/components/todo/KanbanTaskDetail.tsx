@@ -1,16 +1,27 @@
-import { KanbanItemDetailProps } from '@/types/kanban';
+import { useKanbanStore } from '@/stores/kanban';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
-export default function KanbanItemDetail({
-  item,
+interface KanbanTaskDetailProps {
+  taskId: string;
+  onEdit: () => void;
+  onDelete: (id: string) => void;
+  onClose: () => void;
+}
+
+export default function KanbanTaskDetail({
+  taskId,
   onEdit,
   onDelete,
   onClose,
-}: KanbanItemDetailProps) {
+}: KanbanTaskDetailProps) {
+  const task = useKanbanStore((state) => state.board.tasks[taskId]);
+
   const formatDate = (date: Date | string) => {
     return format(new Date(date), 'PPP', { locale: ko });
   };
+
+  if (!task) return null;
 
   return (
     <div
@@ -29,36 +40,36 @@ export default function KanbanItemDetail({
           </button>
         </div>
         <p className="float-end text-xs text-gray-400">
-          {item.updatedAt
-            ? `최종 수정 : ${formatDate(item.updatedAt)}`
-            : `생성 날짜 : ${formatDate(item.createdAt)}`}
+          {task.updatedAt
+            ? `최종 수정 : ${formatDate(task.updatedAt)}`
+            : `생성 날짜 : ${formatDate(task.createdAt)}`}
         </p>
         <div className="select-text space-y-6 py-2">
           <div>
             <p className="mb-1 text-sm font-medium text-gray-400">제목</p>
             <div className="rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white">
-              {item.title}
+              {task.title}
             </div>
           </div>
           <div>
             <p className="mb-1 text-sm font-medium text-gray-400">내용</p>
             <div className="min-h-[100px] whitespace-pre-wrap rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white">
-              {item.content}
+              {task.content}
             </div>
           </div>
           <div>
             <p className="mb-1 text-sm font-medium text-gray-400">기간</p>
             <div className="flex items-center gap-2 rounded-lg border border-gray-700 bg-gray-900 px-4 py-3 text-white">
-              <span>{formatDate(item.startDate)}</span>
+              <span>{formatDate(task.dueDate.start)}</span>
               <span className="text-gray-500">―</span>
-              <span>{formatDate(item.endDate)}</span>
+              <span>{formatDate(task.dueDate.end)}</span>
             </div>
           </div>
         </div>
         <div className="flex items-center justify-between border-t border-gray-700 pt-4">
           <button
             type="button"
-            onClick={() => onDelete(item.kanbanId)}
+            onClick={() => onDelete(taskId)}
             className="rounded-lg border border-red-500/30 px-4 py-2 text-sm text-red-400 hover:border-red-500/50 hover:bg-red-500/10 hover:text-red-300"
           >
             삭제

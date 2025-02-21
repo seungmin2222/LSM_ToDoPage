@@ -4,14 +4,17 @@ import { useKanbanStore } from '@/stores/kanban';
 import MetricCard from './MetricCard';
 
 export default function KanbanMetrics() {
-  const boards = useKanbanStore((state) => state.boards);
-  const deleteBoard = useKanbanStore((state) => state.deleteBoard);
+  const { columns, columnOrder } = useKanbanStore((state) => state.board);
+  const deleteColumn = useKanbanStore((state) => state.deleteColumn);
 
-  const metrics = boards.map((board) => ({
-    id: board.boardId,
-    label: board.title,
-    value: board.items.length,
-  }));
+  const metrics = columnOrder.map((columnId) => {
+    const column = columns[columnId];
+    return {
+      id: columnId,
+      label: column.title,
+      value: column.taskIds.length,
+    };
+  });
 
   return (
     <header className="mb-4">
@@ -30,7 +33,7 @@ export default function KanbanMetrics() {
               key={metric.id}
               label={metric.label}
               value={metric.value}
-              onDelete={() => deleteBoard(metric.id)}
+              onDelete={() => deleteColumn(metric.id)}
             />
           ))}
         </div>

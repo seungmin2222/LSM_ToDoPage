@@ -4,18 +4,18 @@ import { useKanbanStore } from '@/stores/kanban';
 import { useState } from 'react';
 
 export default function KanbanHeader() {
-  const [boardName, setBoardName] = useState('');
-  const addBoard = useKanbanStore((state) => state.addBoard);
+  const [columnName, setColumnName] = useState('');
+  const addColumn = useKanbanStore((state) => state.addColumn);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (boardName.trim()) {
-      addBoard(boardName.trim());
-      setBoardName('');
+    if (columnName.trim()) {
+      addColumn(columnName.trim());
+      setColumnName('');
     }
   };
 
-  const isButtonDisabled = !boardName.trim();
+  const isButtonDisabled = !columnName.trim();
 
   return (
     <div className="flex items-center justify-between">
@@ -24,9 +24,9 @@ export default function KanbanHeader() {
         <form onSubmit={handleSubmit} className="flex items-center">
           <input
             type="text"
-            value={boardName}
-            onChange={(e) => setBoardName(e.target.value)}
-            placeholder="새 보드 이름 입력"
+            value={columnName}
+            onChange={(e) => setColumnName(e.target.value)}
+            placeholder="새 컬럼 이름 입력"
             className="rounded-lg border border-gray-700 bg-gray-900 px-3 py-1.5 text-sm text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none"
           />
         </form>
@@ -39,7 +39,7 @@ export default function KanbanHeader() {
               : 'border-blue-800 bg-blue-400/10 text-blue-400 hover:bg-blue-600 hover:text-white'
           }`}
         >
-          ＋ 새 보드 추가
+          ＋ 새 컬럼 추가
         </button>
       </div>
     </div>

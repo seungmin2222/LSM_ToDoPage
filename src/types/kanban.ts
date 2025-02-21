@@ -1,19 +1,30 @@
-export interface KanbanItem {
-  kanbanId: string;
+export interface Task {
+  id: string;
   title: string;
   content: string;
-  startDate: Date;
-  endDate: Date;
-  boardId: string;
-  order: number;
+  dueDate: {
+    start: Date;
+    end: Date;
+  };
   createdAt: Date;
   updatedAt?: Date;
+  columnId: string;
 }
 
-export interface KanbanBoard {
-  boardId: string;
+export interface Column {
+  id: string;
   title: string;
-  items: KanbanItem[];
+  taskIds: string[];
+}
+
+export interface Board {
+  columns: {
+    [key: string]: Column;
+  };
+  tasks: {
+    [key: string]: Task;
+  };
+  columnOrder: string[];
 }
 
 export interface MenuItem {
@@ -22,26 +33,8 @@ export interface MenuItem {
   variant?: 'default' | 'danger';
 }
 
-export interface KanbanItemFormProps {
-  onClose: () => void;
-  boardId: string;
-  initialData?: Omit<KanbanItem, 'boardId'>;
-}
-
-export interface KanbanItemDetailProps {
-  item: KanbanItem;
-  onEdit: () => void;
-  onDelete: (id: string) => void;
-  onClose: () => void;
-}
-
-export interface KanbanDropdownMenuProps {
+export interface PositionedDropdownProps {
   items: MenuItem[];
   onClose: () => void;
   position: { x: number; y: number };
-}
-
-export interface DropdownMenuProps {
-  items: MenuItem[];
-  onClose: () => void;
 }

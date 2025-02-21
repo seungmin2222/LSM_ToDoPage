@@ -1,19 +1,27 @@
 'use client';
 
-import { KanbanBoard as KanbanBoardProps, MenuItem } from '@/types/kanban';
+import { useKanbanStore } from '@/stores/kanban';
+import { MenuItem } from '@/types/kanban';
 import { useRef, useState } from 'react';
 import KanbanDropdownMenu from './KanbanDropdownMenu';
-import KanbanItem from './KanbanItem';
-import KanbanItemForm from './KanbanItemForm';
-import { useKanbanStore } from '@/stores/kanban';
+import KanbanTask from './KanbanTask';
+import KanbanTaskForm from './KanbanTaskForm';
 
-export default function KanbanBoard({
-  boardId,
+interface KanbanColumnProps {
+  id: string;
+  title: string;
+  taskIds: string[];
+}
+
+export default function KanbanColumn({
+  id,
   title,
-  items,
-}: KanbanBoardProps) {
-  const updateBoard = useKanbanStore((state) => state.updateBoard);
-  const deleteBoard = useKanbanStore((state) => state.deleteBoard);
+  taskIds,
+}: KanbanColumnProps) {
+  const updateColumn = useKanbanStore((state) => state.updateColumn);
+  const deleteColumn = useKanbanStore((state) => state.deleteColumn);
+  const tasks = useKanbanStore((state) => state.board.tasks);
+
   const [showForm, setShowForm] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -37,7 +45,7 @@ export default function KanbanBoard({
 
   const handleTitleSubmit = () => {
     if (editedTitle.trim()) {
-      updateBoard(boardId, editedTitle.trim());
+      updateColumn(id, editedTitle.trim());
       setIsEditing(false);
     }
   };
@@ -53,14 +61,14 @@ export default function KanbanBoard({
 
   const menuItems: MenuItem[] = [
     {
-      label: '보드명 수정',
+      label: '컬럼명 수정',
       onClick: handleStartEditing,
     },
     {
-      label: '보드 삭제',
+      label: '컬럼 삭제',
       onClick: () => {
-        if (window.confirm('정말로 이 보드을 삭제하시겠습니까?')) {
-          deleteBoard(boardId);
+        if (window.confirm('정말로 이 컬럼을 삭제하시겠습니까?')) {
+          deleteColumn(id);
         }
       },
       variant: 'danger',
@@ -115,34 +123,24 @@ export default function KanbanBoard({
       </div>
 
       <div className="space-y-2">
-        {items.map((item) => (
-          <KanbanItem
-            key={item.kanbanId}
-            kanbanId={item.kanbanId}
-            title={item.title}
-            content={item.content}
-            startDate={item.startDate}
-            endDate={item.endDate}
-            boardId={item.boardId}
-            order={item.order}
-            createdAt={item.createdAt}
-            updatedAt={item.updatedAt}
+        {taskIds.map((taskId) => (
+          <KanbanTask
+            key={taskId}
+            taskId={taskId}
+            columnId={id}
+            task={tasks[taskId]}
           />
         ))}
         <button
           onClick={() => setShowForm(true)}
           className="w-full rounded-lg border border-gray-700 bg-gray-800/50 p-3 text-left text-gray-400 transition-all hover:bg-gray-700"
         >
-          ＋ 새 칸반 추가
+          ＋ 새 태스크 추가
         </button>
       </div>
 
       {showForm && (
-        <KanbanItemForm
-          onClose={() => setShowForm(false)}
-          boardId={boardId}
-          initialData={undefined}
-        />
+        <KanbanTaskForm onClose={() => setShowForm(false)} columnId={id} />
       )}
     </div>
   );

@@ -1,23 +1,25 @@
+'use client';
+
 import { useKanbanStore } from '@/stores/kanban';
-import { KanbanItem as KanbanItemType } from '@/types/kanban';
+import { Task } from '@/types/kanban';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState } from 'react';
-import KanbanItemDetail from './KanbanItemDetail';
-import KanbanItemForm from './KanbanItemForm';
+import KanbanTaskDetail from './KanbanTaskDetail';
+import KanbanTaskForm from './KanbanTaskForm';
 
-export default function KanbanItem({
-  kanbanId,
-  title,
-  content,
-  startDate,
-  endDate,
-  boardId,
-  order,
-  createdAt,
-  updatedAt,
-}: KanbanItemType) {
-  const deleteItem = useKanbanStore((state) => state.deleteItem);
+interface KanbanTaskProps {
+  taskId: string;
+  columnId: string;
+  task: Task;
+}
+
+export default function KanbanTask({
+  taskId,
+  columnId,
+  task,
+}: KanbanTaskProps) {
+  const deleteTask = useKanbanStore((state) => state.deleteTask);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
 
@@ -29,7 +31,7 @@ export default function KanbanItem({
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (window.confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-      deleteItem(kanbanId);
+      deleteTask(taskId);
     }
   };
 
@@ -42,17 +44,21 @@ export default function KanbanItem({
     setIsFormOpen(true);
   };
 
-  const handleDeleteFromDetail = (itemId: string) => {
+  const handleDeleteFromDetail = (taskId: string) => {
     if (window.confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-      deleteItem(itemId);
+      deleteTask(taskId);
       setIsDetailOpen(false);
     }
   };
 
-  const formattedStartDate = format(new Date(startDate), 'yyyy-MM-dd', {
-    locale: ko,
-  });
-  const formattedEndDate = format(new Date(endDate), 'yyyy-MM-dd', {
+  const formattedStartDate = format(
+    new Date(task.dueDate.start),
+    'yyyy-MM-dd',
+    {
+      locale: ko,
+    }
+  );
+  const formattedEndDate = format(new Date(task.dueDate.end), 'yyyy-MM-dd', {
     locale: ko,
   });
 
@@ -64,7 +70,7 @@ export default function KanbanItem({
       >
         <div className="flex items-center gap-2">
           <div className="min-w-0 flex-1">
-            <div className="w-full truncate text-white">{title}</div>
+            <div className="w-full truncate text-white">{task.title}</div>
             <div className="mt-1 text-sm text-gray-400">
               {formattedStartDate === formattedEndDate
                 ? formattedStartDate
@@ -88,33 +94,15 @@ export default function KanbanItem({
         </div>
       </div>
       {isFormOpen && (
-        <KanbanItemForm
+        <KanbanTaskForm
           onClose={() => setIsFormOpen(false)}
-          boardId={boardId}
-          initialData={{
-            kanbanId,
-            title,
-            content,
-            startDate,
-            endDate,
-            order,
-            createdAt,
-          }}
+          columnId={columnId}
+          initialData={task}
         />
       )}
       {isDetailOpen && (
-        <KanbanItemDetail
-          item={{
-            kanbanId,
-            title,
-            content,
-            startDate,
-            endDate,
-            boardId,
-            order,
-            createdAt,
-            updatedAt: updatedAt || undefined,
-          }}
+        <KanbanTaskDetail
+          taskId={taskId}
           onEdit={handleEditFromDetail}
           onDelete={handleDeleteFromDetail}
           onClose={() => setIsDetailOpen(false)}
