@@ -23,6 +23,7 @@ interface KanbanStore {
     destinationColumnId: string,
     newIndex: number
   ) => void;
+  reorderColumn: (startIndex: number, endIndex: number) => void;
 }
 
 export const useKanbanStore = create<KanbanStore>()(
@@ -196,6 +197,20 @@ export const useKanbanStore = create<KanbanStore>()(
                   columnId: destinationColumnId,
                 },
               },
+            },
+          };
+        }),
+
+      reorderColumn: (startIndex, endIndex) =>
+        set((state) => {
+          const newColumnOrder = [...state.board.columnOrder];
+          const [removed] = newColumnOrder.splice(startIndex, 1);
+          newColumnOrder.splice(endIndex, 0, removed);
+
+          return {
+            board: {
+              ...state.board,
+              columnOrder: newColumnOrder,
             },
           };
         }),
