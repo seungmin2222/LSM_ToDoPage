@@ -1,11 +1,33 @@
 'use client';
 
+import { useDragAndDrop } from '@/hooks/useDragAndDrop';
 import { useKanbanStore } from '@/stores/kanban';
+import {
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { SortableContext } from '@dnd-kit/sortable';
 import MetricCard from './MetricCard';
 
 export default function KanbanMetrics() {
   const { columns, columnOrder } = useKanbanStore((state) => state.board);
   const deleteColumn = useKanbanStore((state) => state.deleteColumn);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 3,
+      },
+    })
+  );
+
+  const { handleDragEnd } = useDragAndDrop({
+    columns,
+    columnOrder,
+    enableTaskDrag: false,
+  });
 
   const metrics = columnOrder.map((columnId) => {
     const column = columns[columnId];
@@ -27,16 +49,21 @@ export default function KanbanMetrics() {
         </div>
       </div>
       <div className="flex overflow-x-auto pb-4">
-        <div className="mt-4 flex gap-2">
-          {metrics.map((metric) => (
-            <MetricCard
-              key={metric.id}
-              label={metric.label}
-              value={metric.value}
-              onDelete={() => deleteColumn(metric.id)}
-            />
-          ))}
-        </div>
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+          <div className="mt-4 flex gap-2">
+            <SortableContext items={columnOrder}>
+              {metrics.map((metric) => (
+                <MetricCard
+                  key={metric.id}
+                  id={metric.id}
+                  label={metric.label}
+                  value={metric.value}
+                  onDelete={() => deleteColumn(metric.id)}
+                />
+              ))}
+            </SortableContext>
+          </div>
+        </DndContext>
       </div>
     </header>
   );
