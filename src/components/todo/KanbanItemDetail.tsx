@@ -8,8 +8,8 @@ export default function KanbanItemDetail({
   onDelete,
   onClose,
 }: KanbanItemDetailProps) {
-  const formatDate = (date: Date) => {
-    return format(date, 'PPP', { locale: ko });
+  const formatDate = (date: Date | string) => {
+    return format(new Date(date), 'PPP', { locale: ko });
   };
 
   return (
@@ -23,11 +23,16 @@ export default function KanbanItemDetail({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-gray-400 hover:bg-gray-700 hover:text-white"
+            className="rounded-lg px-3 py-1 text-gray-400 hover:bg-gray-700 hover:text-white"
           >
             Ｘ
           </button>
         </div>
+        <p className="float-end text-xs text-gray-400">
+          {item.updatedAt
+            ? `최종 수정 : ${formatDate(item.updatedAt)}`
+            : `생성 날짜 : ${formatDate(item.createdAt)}`}
+        </p>
         <div className="select-text space-y-6 py-2">
           <div>
             <p className="mb-1 text-sm font-medium text-gray-400">제목</p>

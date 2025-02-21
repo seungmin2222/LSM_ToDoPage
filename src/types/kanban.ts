@@ -25,16 +25,7 @@ export interface MenuItem {
 export interface KanbanItemFormProps {
   onClose: () => void;
   boardId: string;
-  initialData?: Pick<
-    KanbanItem,
-    | 'kanbanId'
-    | 'title'
-    | 'content'
-    | 'startDate'
-    | 'endDate'
-    | 'order'
-    | 'createdAt'
-  >;
+  initialData?: Omit<KanbanItem, 'boardId'>;
 }
 
 export interface KanbanItemDetailProps {

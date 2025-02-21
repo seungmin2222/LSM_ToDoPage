@@ -59,19 +59,19 @@ export const useKanbanStore = create<KanbanStore>()(
           };
         }),
       updateItem: (updatedItem) => {
-        set((state) => ({
-          boards: state.boards.map((board) => ({
-            ...board,
-            items: board.items.map((item) =>
-              item.kanbanId === updatedItem.kanbanId
-                ? {
-                    ...updatedItem,
-                    updatedAt: new Date(),
-                  }
-                : item
-            ),
-          })),
-        }));
+        set((state) => {
+          const newState = {
+            boards: state.boards.map((board) => ({
+              ...board,
+              items: board.items.map((item) =>
+                item.kanbanId === updatedItem.kanbanId
+                  ? { ...updatedItem, updatedAt: new Date() }
+                  : item
+              ),
+            })),
+          };
+          return newState;
+        });
       },
       deleteItem: (kanbanId) =>
         set((state) => ({
