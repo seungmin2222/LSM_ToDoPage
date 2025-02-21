@@ -2,6 +2,8 @@
 
 import { useKanbanStore } from '@/stores/kanban';
 import { MenuItem } from '@/types/kanban';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { useRef, useState } from 'react';
 import KanbanDropdownMenu from './KanbanDropdownMenu';
 import KanbanTask from './KanbanTask';
@@ -31,6 +33,20 @@ export default function KanbanColumn({
     y: number;
   }>({ x: 0, y: 0 });
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: id,
+    data: {
+      type: 'Column',
+    },
+  });
 
   const handleStartEditing = () => {
     setIsEditing(true);
@@ -76,8 +92,20 @@ export default function KanbanColumn({
   ];
 
   return (
-    <div className="w-80 flex-shrink-0">
-      <div className="group mb-3 flex items-center justify-between rounded-lg border border-gray-700 p-3 transition-colors [&:hover:not(:has(button:hover))]:bg-gray-700">
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+      }}
+      className="w-80 flex-shrink-0"
+    >
+      <div
+        {...attributes}
+        {...listeners}
+        className="group mb-3 flex items-center justify-between rounded-lg border border-gray-700 p-3 transition-colors [&:hover:not(:has(button:hover))]:bg-gray-700"
+      >
         {isEditing ? (
           <input
             ref={inputRef}
@@ -123,14 +151,16 @@ export default function KanbanColumn({
       </div>
 
       <div className="space-y-2">
-        {taskIds.map((taskId) => (
-          <KanbanTask
-            key={taskId}
-            taskId={taskId}
-            columnId={id}
-            task={tasks[taskId]}
-          />
-        ))}
+        <SortableContext items={taskIds}>
+          {taskIds.map((taskId) => (
+            <KanbanTask
+              key={taskId}
+              taskId={taskId}
+              columnId={id}
+              task={tasks[taskId]}
+            />
+          ))}
+        </SortableContext>
         <button
           onClick={() => setShowForm(true)}
           className="w-full rounded-lg border border-gray-700 bg-gray-800/50 p-3 text-left text-gray-400 transition-all hover:bg-gray-700"

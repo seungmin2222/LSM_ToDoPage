@@ -2,6 +2,8 @@
 
 import { useKanbanStore } from '@/stores/kanban';
 import { Task } from '@/types/kanban';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState } from 'react';
@@ -22,6 +24,21 @@ export default function KanbanTask({
   const deleteTask = useKanbanStore((state) => state.deleteTask);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
+
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: taskId,
+    data: {
+      type: 'Task',
+      task: task,
+    },
+  });
 
   const handleUpdate = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -65,6 +82,14 @@ export default function KanbanTask({
   return (
     <>
       <div
+        ref={setNodeRef}
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition,
+          opacity: isDragging ? 0.5 : 1,
+        }}
+        {...attributes}
+        {...listeners}
         className="group cursor-pointer rounded-lg border border-gray-700 bg-gray-900 p-3 transition-all hover:bg-gray-700"
         onClick={handleCardClick}
       >
