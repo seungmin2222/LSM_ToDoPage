@@ -16,6 +16,13 @@ interface KanbanStore {
   ) => void;
   updateTask: (taskId: string, task: Partial<Task>) => void;
   deleteTask: (taskId: string) => void;
+
+  moveTask: (
+    taskId: string,
+    sourceColumnId: string,
+    destinationColumnId: string,
+    newIndex: number
+  ) => void;
 }
 
 export const useKanbanStore = create<KanbanStore>()(
@@ -144,6 +151,49 @@ export const useKanbanStore = create<KanbanStore>()(
                   taskIds: state.board.columns[task.columnId].taskIds.filter(
                     (id) => id !== taskId
                   ),
+                },
+              },
+            },
+          };
+        }),
+
+      moveTask: (taskId, sourceColumnId, destinationColumnId, newIndex) =>
+        set((state) => {
+          const sourceColumn = state.board.columns[sourceColumnId];
+          const destColumn = state.board.columns[destinationColumnId];
+
+          const newSourceTaskIds = sourceColumn.taskIds.filter(
+            (id) => id !== taskId
+          );
+
+          const newDestTaskIds = [...destColumn.taskIds];
+
+          const existingIndex = newDestTaskIds.indexOf(taskId);
+          if (existingIndex !== -1) {
+            newDestTaskIds.splice(existingIndex, 1);
+          }
+
+          newDestTaskIds.splice(newIndex, 0, taskId);
+
+          return {
+            board: {
+              ...state.board,
+              columns: {
+                ...state.board.columns,
+                [sourceColumnId]: {
+                  ...sourceColumn,
+                  taskIds: newSourceTaskIds,
+                },
+                [destinationColumnId]: {
+                  ...destColumn,
+                  taskIds: newDestTaskIds,
+                },
+              },
+              tasks: {
+                ...state.board.tasks,
+                [taskId]: {
+                  ...state.board.tasks[taskId],
+                  columnId: destinationColumnId,
                 },
               },
             },
