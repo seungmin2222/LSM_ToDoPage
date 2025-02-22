@@ -5,9 +5,9 @@ import { MenuItem } from '@/types/kanban';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useRef, useState } from 'react';
-import KanbanDropdownMenu from './KanbanDropdownMenu';
+import KanbanTaskForm from '../forms/KanbanTaskForm';
+import KanbanDropdownMenu from '../ui/KanbanDropdownMenu';
 import KanbanTask from './KanbanTask';
-import KanbanTaskForm from './KanbanTaskForm';
 
 interface KanbanColumnProps {
   id: string;

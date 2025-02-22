@@ -1,4 +1,4 @@
-export default function KanbanFooter() {
+export default function KanbanScrollGuide() {
   return (
     <div className="flex items-center justify-end gap-2 text-xs text-gray-500">
       <span>←</span>

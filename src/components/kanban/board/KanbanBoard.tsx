@@ -10,10 +10,10 @@ import {
 } from '@dnd-kit/core';
 import { SortableContext } from '@dnd-kit/sortable';
 import KanbanColumn from './KanbanColumn';
-import KanbanFooter from './KanbanFooter';
 import KanbanHeader from './KanbanHeader';
+import KanbanScrollGuide from './KanbanScrollGuide';
 
-export default function KanbanMain() {
+export default function KanbanBoard() {
   const { columns, columnOrder } = useKanbanStore((state) => state.board);
 
   const { handleDragOver, handleDragEnd } = useDragAndDrop({
@@ -53,7 +53,7 @@ export default function KanbanMain() {
           </SortableContext>
         </div>
       </DndContext>
-      <KanbanFooter />
+      <KanbanScrollGuide />
     </main>
   );
 }

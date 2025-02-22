@@ -1,11 +1,11 @@
-import KanbanMetrics from '@/components/dashboard/KanbanMetrics';
-import KanbanMain from '@/components/todo/KanbanMain';
+import KanbanBoard from '@/components/kanban/board/KanbanBoard';
+import KanbanMetrics from '@/components/metrics/KanbanMetrics';
 
 export default function KanbanPage() {
   return (
     <div className="min-h-screen select-none bg-gray-900 p-6">
       <KanbanMetrics />
-      <KanbanMain />
+      <KanbanBoard />
     </div>
   );
 }

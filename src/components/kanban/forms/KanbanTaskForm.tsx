@@ -11,7 +11,7 @@ interface KanbanTaskFormProps {
   initialData?: Partial<Task>;
 }
 
-export default function KanbanItemForm({
+export default function KanbanTaskForm({
   onClose,
   columnId,
   initialData,

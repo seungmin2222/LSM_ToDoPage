@@ -7,8 +7,8 @@ import { CSS } from '@dnd-kit/utilities';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState } from 'react';
-import KanbanTaskDetail from './KanbanTaskDetail';
-import KanbanTaskForm from './KanbanTaskForm';
+import KanbanTaskDetail from '../forms/KanbanTaskDetail';
+import KanbanTaskForm from '../forms/KanbanTaskForm';
 
 interface KanbanTaskProps {
   taskId: string;
