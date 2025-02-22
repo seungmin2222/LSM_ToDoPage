@@ -37,7 +37,7 @@ export default function KanbanMain() {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="mt-8 flex gap-2 overflow-x-auto pb-4">
+        <div className="mt-8 flex gap-3 overflow-x-auto pb-4">
           <SortableContext items={columnOrder}>
             {columnOrder.map((columnId) => {
               const column = columns[columnId];

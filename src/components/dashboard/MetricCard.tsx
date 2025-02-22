@@ -31,7 +31,7 @@ export default function MetricCard({
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const handleClick = () => {
+  const handleDelete = () => {
     if (!isDragging && window.confirm(`'${label}' 컬럼을 삭제하시겠습니까?`)) {
       onDelete();
     }
@@ -51,15 +51,20 @@ export default function MetricCard({
       style={style}
       {...attributes}
       {...listeners}
-      onClick={handleClick}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       className="flex flex-shrink-0 cursor-grab gap-4"
     >
-      <div className="relative flex-shrink-0 justify-items-center rounded-lg bg-gray-800 px-4 py-3 text-center transition-all duration-200 hover:scale-110 hover:bg-gray-700">
-        <div className="min-w-10">
-          <p className="text-sm text-gray-400">{label}</p>
-          <p className="text-xl font-semibold text-white">{value}</p>
+      <div className="group relative flex-shrink-0 justify-items-center rounded-lg bg-gray-800 px-4 py-3 text-center transition-all duration-300 hover:scale-105 hover:bg-gray-700 hover:shadow-lg">
+        <button
+          onClick={handleDelete}
+          className="absolute -right-[5px] -top-[5px] hidden h-6 w-6 items-center justify-center rounded-full border border-red-400/50 bg-gray-800 text-xs text-red-400 opacity-0 transition-all hover:border-red-300 hover:bg-red-500 hover:text-white group-hover:flex group-hover:opacity-100"
+        >
+          Ｘ
+        </button>
+        <div className="min-w-[4rem] px-1">
+          <p className="text-sm font-medium text-gray-400">{label}</p>
+          <p className="mt-1 text-xl font-semibold text-white">{value}</p>
         </div>
       </div>
     </div>

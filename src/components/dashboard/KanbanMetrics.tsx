@@ -50,7 +50,7 @@ export default function KanbanMetrics() {
       </div>
       <div className="flex overflow-x-auto pb-4">
         <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-          <div className="mt-4 flex gap-2">
+          <div className="mt-4 flex gap-3">
             <SortableContext items={columnOrder}>
               {metrics.map((metric) => (
                 <MetricCard
