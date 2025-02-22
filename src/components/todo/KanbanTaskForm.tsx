@@ -148,6 +148,8 @@ export default function KanbanItemForm({
               onChange={(update: [Date | null, Date | null]) => {
                 setDateRange(update);
               }}
+              onChangeRaw={(e) => e?.preventDefault()}
+              onFocus={(e) => e.target.blur()}
               isClearable={true}
               placeholderText="📅 여기를 클릭해서 날짜를 선택하세요"
               dateFormat="yyyy-MM-dd"
