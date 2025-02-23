@@ -3,6 +3,12 @@
 
 # testing
 /coverage
+**/__snapshots__/
+*.snap
+/lcov-report
+clover.xml
+coverage-final.json
+lcov.info
 
 # next.js
 /.next/
