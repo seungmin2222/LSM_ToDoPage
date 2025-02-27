@@ -1,7 +1,7 @@
 'use client';
 
 import { useKanbanStore } from '@/stores/kanban';
-import { MenuItem } from '@/types/kanban';
+import { MenuItem, PreviewState } from '@/types/kanban';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useRef, useState } from 'react';
@@ -13,12 +13,14 @@ interface KanbanColumnProps {
   id: string;
   title: string;
   taskIds: string[];
+  previewState: PreviewState | null;
 }
 
 export default function KanbanColumn({
   id,
   title,
   taskIds,
+  previewState,
 }: KanbanColumnProps) {
   const updateColumn = useKanbanStore((state) => state.updateColumn);
   const deleteColumn = useKanbanStore((state) => state.deleteColumn);
@@ -91,6 +93,8 @@ export default function KanbanColumn({
     },
   ];
 
+  const isTargetColumn = previewState && previewState.targetColumnId === id;
+
   return (
     <div
       ref={setNodeRef}
@@ -152,18 +156,34 @@ export default function KanbanColumn({
 
       <div className="space-y-2">
         <SortableContext items={taskIds}>
-          {taskIds.map((taskId) => (
-            <KanbanTask
-              key={taskId}
-              taskId={taskId}
-              columnId={id}
-              task={tasks[taskId]}
-            />
-          ))}
+          {taskIds.map((taskId, index) => {
+            const isDropTarget =
+              isTargetColumn &&
+              previewState?.newIndex === index &&
+              previewState?.activeId !== taskId;
+
+            return (
+              <div key={taskId}>
+                {isDropTarget && (
+                  <div className="my-1 h-1 w-full rounded-full bg-blue-500" />
+                )}
+                <KanbanTask
+                  taskId={taskId}
+                  columnId={id}
+                  task={tasks[taskId]}
+                />
+              </div>
+            );
+          })}
         </SortableContext>
+
+        {isTargetColumn && previewState?.newIndex === taskIds.length && (
+          <div className="my-1 h-1 w-full rounded-full bg-blue-500" />
+        )}
+
         <button
           onClick={() => setShowForm(true)}
-          className="w-full rounded-lg border border-gray-700 bg-gray-800/50 p-3 text-left text-gray-400 transition-all hover:bg-gray-700"
+          className="w-full rounded-lg border border-gray-700 bg-gray-800/50 p-3 text-left text-gray-400 hover:bg-gray-700"
         >
           ＋ 새 태스크 추가
         </button>

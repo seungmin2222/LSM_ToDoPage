@@ -1,6 +1,7 @@
 import { useKanbanStore } from '@/stores/kanban';
-import { Column } from '@/types/kanban';
-import { DragEndEvent, DragOverEvent } from '@dnd-kit/core';
+import { Column, PreviewState } from '@/types/kanban';
+import { DragEndEvent, DragOverEvent, DragStartEvent } from '@dnd-kit/core';
+import { useState } from 'react';
 
 interface UseDragAndDropProps {
   columns: {
@@ -17,6 +18,12 @@ export const useDragAndDrop = ({
 }: UseDragAndDropProps) => {
   const moveTask = useKanbanStore((state) => state.moveTask);
   const reorderColumn = useKanbanStore((state) => state.reorderColumn);
+
+  const [previewState, setPreviewState] = useState<PreviewState | null>(null);
+
+  const handleDragStart = (event: DragStartEvent) => {
+    return event.active.id;
+  };
 
   const handleDragOver = (event: DragOverEvent) => {
     if (!enableTaskDrag) return;
@@ -47,34 +54,59 @@ export const useDragAndDrop = ({
       }
 
       if (targetColumnId) {
-        moveTask(activeId, activeData.task.columnId, targetColumnId, newIndex);
+        setPreviewState({
+          activeId,
+          sourceColumnId: activeData.task.columnId,
+          targetColumnId,
+          newIndex,
+        });
       }
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (!over) return;
+    if (!over) {
+      setPreviewState(null);
+      return;
+    }
 
     const activeId = active.id.toString();
     const overId = over.id.toString();
 
-    if (activeId === overId) return;
+    if (activeId === overId) {
+      setPreviewState(null);
+      return;
+    }
 
     const activeData = active.data.current;
 
-    if (!activeData) return;
+    if (!activeData) {
+      setPreviewState(null);
+      return;
+    }
 
     if (activeData.type === 'Column') {
       const oldIndex = columnOrder.indexOf(activeId);
       const newIndex = columnOrder.indexOf(overId);
 
       reorderColumn(oldIndex, newIndex);
+    } else if (activeData.type === 'Task' && previewState) {
+      moveTask(
+        previewState.activeId,
+        previewState.sourceColumnId,
+        previewState.targetColumnId,
+        previewState.newIndex
+      );
     }
+
+    setPreviewState(null);
   };
 
   return {
+    handleDragStart,
     handleDragOver,
     handleDragEnd,
+    previewState,
   };
 };

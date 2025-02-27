@@ -38,3 +38,10 @@ export interface PositionedDropdownProps {
   onClose: () => void;
   position: { x: number; y: number };
 }
+
+export interface PreviewState {
+  activeId: string;
+  sourceColumnId: string;
+  targetColumnId: string;
+  newIndex: number;
+}
